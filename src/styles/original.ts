@@ -1,18 +1,20 @@
 
 import type { ThemeOptions } from '@mui/material/styles';
 
-const light: ThemeOptions = {
-    transitions: {
-        duration: {
-            shortest: 350,
-            shorter: 200,
-            short: 250,
-            standard: 300,
-            complex: 375,
-            enteringScreen: 500,
-            leavingScreen: 500,
-        },
+const transitions: ThemeOptions['transitions'] = {
+    duration: {
+        shortest: 350,
+        shorter: 200,
+        short: 250,
+        standard: 300,
+        complex: 375,
+        enteringScreen: 500,
+        leavingScreen: 195,
     },
+};
+
+const light: ThemeOptions = {
+    transitions,
     palette: {
         mode: 'light',
         text: {
@@ -44,17 +46,7 @@ const light: ThemeOptions = {
 };
 
 const dark: ThemeOptions = {
-    transitions: {
-        duration: {
-            shortest: 350,
-            shorter: 200,
-            short: 250,
-            standard: 300,
-            complex: 375,
-            enteringScreen: 225,
-            leavingScreen: 195,
-        },
-    },
+    transitions,
     palette: {
         mode: 'dark',
         text: {
