@@ -5,7 +5,8 @@
   "scripts": {
     "dev:stg": "env-cmd -f .env.staging next dev -p 5000",
     "dev:prod": "env-cmd -f .env.production next dev -p 5000",
-    "build": "next build",
+    "build:stg": "env-cmd -f .env.staging next build",
+    "build:prod": "env-cmd -f .env.production next build",
     "start": "next start",
     "lint": "next lint"
   },
