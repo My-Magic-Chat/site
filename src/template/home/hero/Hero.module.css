@@ -1,6 +1,6 @@
 .grid-image {
     position: relative;
-    padding: 30px;
+    /* padding: 30px; */
 }
 
 .grid-image::after {

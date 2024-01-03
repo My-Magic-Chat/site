@@ -7,15 +7,20 @@ import Avatar from '@mui/material/Avatar';
 import AppBar from '@mui/material/AppBar';
 import Tooltip from '@mui/material/Tooltip';
 import Toolbar from '@mui/material/Toolbar';
-import AdbIcon from '@mui/icons-material/Adb';
 import MenuItem from '@mui/material/MenuItem';
-import MenuIcon from '@mui/icons-material/Menu';
 import { useTheme } from '@mui/material/styles';
 import Container from '@mui/material/Container';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 
-const pages = ['Planos', 'Contato', 'Sobre'];
+import { EventData } from '@/events';
+
+const pages: { key: EventData<'section_click'>['section'], value: string }[] = [
+    { key: 'feature', value: 'Funcionalidades' },
+    { key: 'social', value: 'Integrações' },
+    { key: 'plan', value: 'Planos' }
+];
+
 const settings = ['Perfil', 'Automações', 'Sair'];
 
 function Title() {
@@ -68,7 +73,7 @@ function AvatarButton() {
         <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" sx={{ bgcolor: palette.secondary.main }} />
+                    <Avatar alt="Remy Sharp" sx={{ bgcolor: palette.secondary.main }} />
                 </IconButton>
             </Tooltip>
             <Menu
@@ -99,16 +104,19 @@ function AvatarButton() {
     );
 }
 
-function MenuButtons() {
+interface MenuButtonsProps { onClick: (page: EventData<'section_click'>['section']) => void; }
+function MenuButtons({ onClick }: MenuButtonsProps) {
     return (
         <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {
                 pages.map((page) => (
                     <Button
-                        key={page}
+                        key={page.key}
+                        color="inherit"
+                        onClick={() => onClick(page.key)}
                         sx={{ my: 2, display: 'block' }}
                     >
-                        {page}
+                        {page.value}
                     </Button>
                 ))
             }
@@ -116,13 +124,14 @@ function MenuButtons() {
     );
 }
 
-export default function ResponsiveAppBar() {
+interface NavProps { goTo: (page: EventData<'section_click'>['section']) => void; }
+export default function Nav({ goTo }: NavProps) {
     return (
         <AppBar position="static">
             <Container maxWidth="xl">
                 <Toolbar disableGutters sx={{ justifyContent: { xs: 'space-between' } }}>
                     <Title />
-                    <MenuButtons />
+                    <MenuButtons onClick={goTo} />
                     <AvatarButton />
                 </Toolbar>
             </Container>

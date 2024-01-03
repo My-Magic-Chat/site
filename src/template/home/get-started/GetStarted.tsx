@@ -1,61 +1,45 @@
-import Box from '@mui/material/Box';
-import Fade from '@mui/material/Fade';
-import Card from '@mui/material/Card';
-import Grid from '@mui/material/Grid';
-import Stack from '@mui/material/Stack';
-import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
-import CardContent from '@mui/material/CardContent';
-import CardActionArea from '@mui/material/CardActionArea';
-import Button from '@mui/material/Button';
+import { useRef } from 'react';
 
-function Title() {
-    return (
-        <>
-            <Typography
-                variant="button"
-                gutterBottom
-                component="p"
-                color="text.secondary">
-                Iniciar
-            </Typography>
-            <Typography
-                variant="h4"
-                gutterBottom
-                component="h4"
-                color="text.primary"
-                fontFamily="Inter, sans-serif"
-            >
-                Comece com My Magic Chat hoje
-            </Typography>
-            <Typography
-                variant="h6"
-                gutterBottom
-                component="h6"
-                color="text.secondary"
-                fontFamily="Inter, sans-serif"
-            >
-                Crie processos de venda de forma rápida e totalmente personalizável.
-            </Typography>
-        </>
-    );
-}
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import Slide from '@mui/material/Slide';
+
+import Title from '@/components/Title';
+import { CLICK_EVENT } from '@/events';
+import { tracking, url } from '@/services/core';
+import useIsInViewport from '@/hooks/useIsInViewport';
+import Trigger from '@/components/Trigger';
 
 export default function GetStarted() {
+    const titleRef = useRef<HTMLDivElement>(null);
+    const [, titleDisplayed] = useIsInViewport(titleRef);
+
+    const goToCreateAccount = () => {
+        tracking.event(CLICK_EVENT('create_account_click', { origin: 'getStarted' }));
+        window.location.href = `${url.sso}/signin`;
+    };
+
     return (
-        <Fade in>
-            <Container sx={{ p: 5 }}>
+        <Slide in={titleDisplayed} direction="right">
+            <Container sx={{ p: 5, position: 'relative' }}>
                 <Box textAlign="center">
-                    <Title />
+                    <Title
+                        section="Iniciar"
+                        title="Comece com My Magic Chat hoje"
+                        subtitle="Crie processos de venda de forma rápida e totalmente personalizável."
+                    />
                     <Button
                         variant="contained"
                         color="primary"
                         sx={{ mt: 3 }}
+                        onClick={goToCreateAccount}
                     >
-                        Contratar agora
+                        Criar conta
                     </Button>
                 </Box>
+                <Trigger ref={titleRef} top={125} />
             </Container>
-        </Fade>
+        </Slide>
     );
 }

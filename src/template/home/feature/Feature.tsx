@@ -1,77 +1,47 @@
+import { useEffect, useRef, useState } from 'react';
+
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
+import Zoom from '@mui/material/Zoom';
 import { useTheme } from '@mui/material/styles';
 import Container from '@mui/material/Container';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import Avatar from '@mui/material/Avatar';
+import Typography from '@mui/material/Typography';
+
+
+import Title from '@/components/Title';
+import Trigger from '@/components/Trigger';
+import useIsInViewport from '@/hooks/useIsInViewport';
 
 import list from './config';
 import Puzzle from './Puzzle';
 
-function Title() {
-    return (
-        <Box textAlign="center">
-            <Typography
-                variant="button"
-                gutterBottom
-                component="p"
-                color="text.secondary">
-                Funcionalidades
-            </Typography>
-            <Typography
-                variant="h4"
-                gutterBottom
-                component="h4"
-                color="text.primary"
-                fontFamily="Inter, sans-serif"
-            >
-                Construções simples e descomplicada
-            </Typography>
-            <Typography
-                variant="h6"
-                gutterBottom
-                component="h6"
-                color="text.secondary"
-                fontFamily="Inter, sans-serif"
-            >
-                Totalmente flexível e customizável. Monte suas automações da forma que desejar.
-                <br />
-                Uma experiência única de um sistema de descomplicado.
-            </Typography>
-            <Button
-                size="large"
-                variant="contained"
-                sx={{ mt: 2 }}
-            >
-                Inicie agora
-            </Button>
-        </Box>
-    );
-}
-
-function GridFeature() {
+interface GridFeatureProps { show: boolean; }
+function GridFeature({ show }: GridFeatureProps) {
     return (
         <Grid container spacing={3}>
             {
                 list.map((feature, index) => (
-                    <Grid item key={feature.title} xs={12} sm={6} md={6}>
-                        <Box display="flex" justifyContent="flex-start" alignItems="flex-start">
-                            <Box sx={{ mt: .5, mr: 1 }}>
-                                {feature.icon}
+                    <Zoom
+                        in={show}
+                        key={index}
+                        style={{ transitionDelay: `${150 * (index + 1)}ms` }}
+                    >
+                        <Grid item xs={12} sm={6} md={6}>
+                            <Box display="flex" justifyContent="flex-start" alignItems="flex-start">
+                                <Box sx={{ mt: .5, mr: 1 }}>
+                                    {feature.icon}
+                                </Box>
+                                <Box>
+                                    <Typography variant="h5" color="text.primary">
+                                        {feature.title}
+                                    </Typography>
+                                    <Typography variant="body1" color="text.secondary">
+                                        {feature.description}
+                                    </Typography>
+                                </Box>
                             </Box>
-                            <Box>
-                                <Typography variant="h5" color="text.primary">
-                                    {feature.title}
-                                </Typography>
-                                <Typography variant="body1" color="text.secondary">
-                                    {feature.description}
-                                </Typography>
-                            </Box>
-                        </Box>
-                    </Grid>
+                        </Grid>
+                    </Zoom>
                 ))
             }
         </Grid>
@@ -81,18 +51,46 @@ function GridFeature() {
 export default function Feature() {
     const { palette } = useTheme();
 
+    const titleRef = useRef<HTMLDivElement>(null);
+    const [, titleDisplayed] = useIsInViewport(titleRef);
+
+    const puzzleRef = useRef<HTMLDivElement>(null);
+    const [, puzzleDisplayed] = useIsInViewport(puzzleRef);
+
+    const gridRef = useRef<HTMLDivElement>(null);
+    const [, gridDisplayed] = useIsInViewport(gridRef);
+
     return (
         <Container sx={{ p: 5 }}>
-            <Title />
-            <Box maxWidth={450} sx={{ mt: 6, mx: 'auto' }}>
-                <Puzzle
-                    primary={palette.primary.main}
-                    secondary={palette.secondary.main}
-                    primaryDark={palette.primary.dark}
-                />
-            </Box>
-            <Box sx={{ mt: 6 }}>
-                <GridFeature />
+            <Zoom in={titleDisplayed}>
+                <div style={{ position: 'relative' }}>
+                    <Title
+                        section="Funcionalidades"
+                        title="Construções simples e descomplicada"
+                        subtitle={
+                            <>
+                                Totalmente flexível e customizável. Monte suas automações da forma que desejar.
+                                <br />
+                                Uma experiência única de um sistema de descomplicado.
+                            </>
+                        }
+                    />
+                    <Trigger ref={titleRef} />
+                </div>
+            </Zoom>
+            <Zoom in={puzzleDisplayed} >
+                <Box maxWidth={450} sx={{ position: 'relative', mt: 6, mx: 'auto' }}>
+                    <Puzzle
+                        primary={palette.primary.main}
+                        secondary={palette.secondary.main}
+                        primaryDark={palette.primary.dark}
+                    />
+                    <Trigger ref={puzzleRef} />
+                </Box>
+            </Zoom>
+            <Box sx={{ position: 'relative', mt: 6 }}>
+                <GridFeature show={gridDisplayed} />
+                <Trigger ref={gridRef} top={100} />
             </Box>
         </Container>
     );

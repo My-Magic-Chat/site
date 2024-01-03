@@ -29,7 +29,7 @@ export default [
                 label: 'Dashboard Analytics'
             }
         ],
-        button_label: 'Contratar',
+        button_label: 'Começar',
         disabled: false,
     },
     {
