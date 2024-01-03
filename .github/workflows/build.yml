@@ -1,0 +1,46 @@
+name: Build Site
+
+on:
+  workflow_call:
+    inputs:
+      COMMAND:
+        required: true
+        type: string
+      ENV:
+        required: true
+        type: string
+      PATH:
+        required: true
+        type: string
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+          cache: "yarn"
+
+      - name: Cache node_modules
+        uses: actions/cache@v3
+        with:
+          path: "**/node_modules"
+          key: ${{ runner.os }}-setup-${{ inputs.ENV }}-${{ hashFiles('./yarn.lock') }}
+
+      - name: Cache site
+        id: cache-project
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ github.workspace }}/.next
+          key: ${{ runner.os }}-site-${{ inputs.ENV }}-${{ github.sha }}
+          restore-keys: ${{ runner.os }}-site-${{ inputs.ENV }}-${{ github.sha }}
+
+      - name: Build site
+        if: steps.cache-project.outputs.cache-hit != 'true'
+        run: |
+          yarn ${{ inputs.COMMAND }};

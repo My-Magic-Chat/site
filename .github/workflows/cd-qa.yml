@@ -1,0 +1,24 @@
+name: CD - STG
+
+on:
+  push:
+    branches:
+      - master
+
+  workflow_dispatch:
+
+jobs:
+  setup:
+    uses: ./.github/workflows/setup.yml
+    with:
+      ENV: staging
+    secrets: inherit
+
+  build:
+    needs: [setup]
+    uses: ./.github/workflows/build.yml
+    with:
+      PATH: dist
+      ENV: staging
+      COMMAND: build:stg
+    secrets: inherit
